@@ -1,7 +1,6 @@
 # 113-3-DSCP 🧺 食材管理與料理推薦小工具
 ```mermaid
 flowchart TD
-flowchart TD
     A[程式開始] --> B[掛載 Google 雲端硬碟]
     B --> C[建立資料夾路徑]
     C --> D[定義檔案路徑<br/>ingredient_list.json<br/>menu_db.json]
