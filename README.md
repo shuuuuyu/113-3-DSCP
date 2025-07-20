@@ -1,175 +1,56 @@
-# 113-3-DSCP 🧺 食材管理與料理推薦小工具
-```mermaid
-flowchart TD
-    A[程式開始] --> B[掛載 Google 雲端硬碟]
-    B --> C[建立資料夾路徑]
-    C --> D[定義檔案路徑<br/>ingredient_list.json<br/>menu_db.json]
-    D --> E[初始化讀取資料 load_data()]
-    
-    E --> F{資料檔案存在？}
-    F -->|是| G[載入食材清單和菜單資料]
-    F -->|否| H[建立空清單]
-    G --> I[啟動 Gradio 介面]
-    H --> I
-    
-    I --> J[主要功能選單]
-    
-    J --> K[🧂 食材管理]
-    J --> L[🍳 菜單管理]
-    J --> M[🍲 推薦菜單]
-    J --> N[📊 統計分析]
-    
-    %% 食材管理流程
-    K --> K1[➕ 新增食材]
-    K --> K2[🗑️ 刪除食材]
-    K --> K3[📋 查看食材清單]
-    
-    K1 --> K11[輸入食材資訊<br/>名稱、數量、購買日期<br/>保存天數、分類]
-    K11 --> K12{驗證輸入？}
-    K12 -->|是| K13[計算到期日]
-    K12 -->|否| K14[顯示錯誤訊息]
-    K13 --> K15{食材已存在？}
-    K15 -->|是| K16[顯示警告訊息]
-    K15 -->|否| K17[新增到清單]
-    K17 --> K18[自動儲存資料]
-    K18 --> K19[顯示成功訊息]
-    
-    K2 --> K21[選擇要刪除的食材]
-    K21 --> K22{找到食材？}
-    K22 -->|是| K23[從清單中刪除]
-    K22 -->|否| K24[顯示找不到訊息]
-    K23 --> K25[自動儲存資料]
-    K25 --> K26[顯示刪除成功]
-    
-    K3 --> K31[依到期日排序]
-    K31 --> K32[顯示食材狀態<br/>✅保存中 ⚠️快過期 ❌已過期]
-    
-    %% 菜單管理流程
-    L --> L1[➕ 新增菜單]
-    L --> L2[📋 查看菜單]
-    L --> L3[🔍 檢查菜單]
-    L --> L4[🗑️ 刪除菜單]
-    
-    L1 --> L11[輸入菜名和所需食材]
-    L11 --> L12{輸入驗證？}
-    L12 -->|是| L13[加入菜單資料庫]
-    L12 -->|否| L14[顯示錯誤訊息]
-    L13 --> L15[自動儲存資料]
-    
-    L2 --> L21[顯示所有菜單和所需食材]
-    
-    L3 --> L31[選擇特定菜單]
-    L31 --> L32[檢查現有食材]
-    L32 --> L33{食材足夠？}
-    L33 -->|是| L34[✅ 可以製作]
-    L33 -->|否| L35[⚠️ 列出缺少的食材]
-    
-    L4 --> L41[選擇要刪除的菜單]
-    L41 --> L42[從資料庫移除]
-    L42 --> L43[自動儲存資料]
-    
-    %% 推薦菜單流程
-    M --> M1[取得可用食材清單<br/>（未過期）]
-    M1 --> M2[計算每道菜的匹配度]
-    M2 --> M3[依匹配度排序]
-    M3 --> M4[分類顯示結果]
-    M4 --> M5[✅ 100%匹配：可完整製作]
-    M4 --> M6[⚠️ 50%以上：可考慮製作]
-    M4 --> M7[❌ 低匹配度：參考用]
-    
-    %% 統計分析流程
-    N --> N1[📊 分類數量圖]
-    N --> N2[📊 剩餘天數分布圖]
-    N --> N3[📊 保存狀態圓餅圖]
-    
-    N1 --> N11[統計各分類食材數量]
-    N11 --> N12[生成長條圖]
-    
-    N2 --> N21[計算食材剩餘天數]
-    N21 --> N22[生成分布直方圖]
-    
-    N3 --> N31[統計保存狀態<br/>正常/快過期/已過期]
-    N31 --> N32[生成圓餅圖]
-    
-    %% 資料儲存流程
-    K18 --> SAVE[save_data函式]
-    K25 --> SAVE
-    L15 --> SAVE
-    L43 --> SAVE
-    
-    SAVE --> SAVE1[將食材清單轉換為JSON格式]
-    SAVE1 --> SAVE2[儲存到 ingredient_list.json]
-    SAVE2 --> SAVE3[儲存菜單資料到 menu_db.json]
-    SAVE3 --> SAVE4[回傳儲存狀態訊息]
-    
-    style A fill:#e1f5fe
-    style I fill:#f3e5f5
-    style J fill:#fff3e0
-    style K fill:#e8f5e8
-    style L fill:#fce4ec
-    style M fill:#f1f8e9
-    style N fill:#e3f2fd
-    style SAVE fill:#fff8e1
+# 113-3-DSCP 
+## 🍳 Motivation
+- Our family often forgets to eat the food we buy, and it ends up expiring in the fridge. I’ve always wanted to create a small tool to help manage ingredients more efficiently. Over time, I expanded this idea into something more—such as adding recipe records and even suggesting what to cook based on what’s available.
+## 🛠 Features
+- This program contains four main modules, built with Gradio as the user interface and using Google Drive to store ingredient and recipe data in JSON format.
+### 1️⃣ Ingredient Management
+- Add ingredients (name, quantity, purchase date, and shelf life)
 
+- Delete ingredients (optionally remove a partial quantity)
 
-## 🔍 動機
-家中常有食物因遺忘放到過期，造成浪費。
+- View all current ingredients with expiration status (fresh / expiring / expired)
 
-因此希望透過程式設計實作一個簡易工具來「管理冰箱食材」。
+### 2️⃣ Recipe Management
+- Add new recipes (name and required ingredients)
 
-並以此為基礎，延伸出更多生活化的功能，例如：
+- Delete recipes
 
-管理食譜
+- View all saved recipes
 
-推薦當日可以料理的菜單
+- Check if current ingredients are sufficient to make a selected recipe
 
-食材保存狀況視覺化統計
+### 3️⃣ Recipe Recommendation
+- Match current ingredients with recipes to suggest what you can cook
 
-## 📋 功能說明
-1️⃣ 管理食材
-新增：輸入食材名稱、份量、分類（冷藏、冷凍、乾貨）、購買日與保存天數，自動計算有效期限。
+- Only recipes with all required ingredients are listed
 
-刪除：可依食材名稱與份數進行刪除。
+(Future idea: integrate Groq API + RAG for “near match” suggestions that skip a few minor ingredients like spices)
 
-查看：列出所有食材，並依過期狀態排序顯示。
+### 4️⃣ Ingredient Statistics (Visualization)
+- Bar chart showing the number of ingredients by storage type (Refrigerated / Frozen / Dry Goods)
 
-2️⃣ 管理食譜
-新增：輸入菜名與所需食材。
+- Histogram showing distribution of remaining days (excluding expired items)
 
-刪除：可刪除不需要的食譜。
+- Pie chart showing preservation status (expired / expiring soon / fresh)
 
-查看：檢視所有儲存的菜單。
+## demonstration
+1. flow chart
+2. demo 1
+3. demo 2
+4. demo 3
+5. demo 4
 
-檢查可製作性：比對現有食材是否足以製作特定料理。
+## 🗂 Data Info
+- All data is saved to Google Drive automatically every time you add or delete an item.
 
-3️⃣ 推薦料理
-根據目前庫存的食材，自動比對所有食譜。
+- On program launch, it loads ingredient_list.json and menu_db.json from your Drive.
 
-優先推薦「完全符合所需食材」的菜色。
+- ⚠️ Note about Google Colab & Google Drive Access
 
-未來可擴充推薦邏輯，例如結合缺少少量材料仍可製作的選項。
+    - Each time you launch the program in Google Colab, it will ask for permission to re-mount your Google Drive—even if you've granted access before.
+    - Also, Colab links are temporary and will expire approximately 3 days after the session ends. This means the shared Colab URL or file access won’t remain valid indefinitely.
+## ✅ Test datasets (generated by ChatGPT):
+📦 Ingredient JSON:https://drive.google.com/file/d/1D4UD7DYS1HP8ikAfb-m5qvzct9E_o-1Q/view?usp=sharing
 
-4️⃣ 食材統計視覺化
-透過圖表快速了解冰箱內食材現況：
+📘 Recipe JSON:https://drive.google.com/file/d/1aN-pHJbeKcZXSwACaqTKyRHw4DWSb3BZ/view?usp=sharing
 
-分類數量長條圖（冷藏、冷凍、乾貨）
-
-剩餘天數分布圖
-
-保存狀態圓餅圖（已過期、快過期、保存中）
-
-## 🖥️ 技術與架構
-使用 Gradio 製作互動介面，簡單易用。
-
-資料儲存在 Google 雲端硬碟，具備「斷電不遺失資料」的持久性。
-
-初始測試資料由 ChatGPT 協助生成，並儲存於雲端。
-
-⚠️ 在colab使用本專案前，需授權 Google Drive 以讀寫資料。
-
-但也可以下載本地版本使用，此時食譜、食材資料存在您的電腦
-
-## 資料連結
-🔗 食材資料檔（ingredient_list.json）：https://drive.google.com/file/d/1D4UD7DYS1HP8ikAfb-m5qvzct9E_o-1Q/view?usp=sharing
-
-🔗 食譜資料檔（menu_db.json）：https://drive.google.com/file/d/1aN-pHJbeKcZXSwACaqTKyRHw4DWSb3BZ/view?usp=sharing
