@@ -47,6 +47,7 @@ youtube link
 ![Demo 5](pics/demo_5.png)
 ![Demo 6](pics/demo_6.png)
 
+[slides](https://drive.google.com/file/d/1PZrkk0FYWAOqKD7806SRqs8z5u8PyJKT/view?usp=sharing)
 
 ## 🗂 Data Info
 - All data is saved to Google Drive automatically every time you add or delete an item.
