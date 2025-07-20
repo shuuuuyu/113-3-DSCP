@@ -52,7 +52,9 @@
 
 初始測試資料由 ChatGPT 協助生成，並儲存於雲端。
 
-⚠️ 使用本專案前，需授權 Google Drive 以讀寫資料。
+⚠️ 在colab使用本專案前，需授權 Google Drive 以讀寫資料。
+
+但也可以下載本地版本使用，此時食譜、食材資料存在您的電腦
 
 ## 資料連結
 🔗 食材資料檔（ingredient_list.json）：https://drive.google.com/file/d/1D4UD7DYS1HP8ikAfb-m5qvzct9E_o-1Q/view?usp=sharing
